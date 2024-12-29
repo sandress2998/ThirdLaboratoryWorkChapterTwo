@@ -14,7 +14,6 @@ protected:
 public:
     // конструктор для копирования массива
     DynamicArray(const T* arrayToCopy, int size): size(size) {
-        std::cout << "THIS IS CREATING OF ARRAY OF SIZE = " << size << "\n";
         if (size < 0) throw std::out_of_range("Entered invalid size.\n");
         array = new T[size];
         for (int i = 0; i < size; ++i) {
@@ -23,27 +22,21 @@ public:
     }
     // конструктор создания массива определенной длины
     DynamicArray(int size): size(size) {
-        std::cout << "THIS IS CREATING OF ARRAY OF SIZE = " << size << "\n";
         if (size < 0) throw std::out_of_range("Entered invalid size.\n");
-        std::cout << "size = " << size << "\n";
         array = new T[size];
     }
 
     // конструктор создания массива определенной длины
-    DynamicArray(): size(0) {
-        std::cout << "THIS IS CREATING OF ARRAY OF SIZE = " << size << "\n";
-    }
+    DynamicArray(): size(0) {}
 
     // конструктор копирования
     DynamicArray(const DynamicArray<T>& other): size(other.getSize()), array(new T[other.getSize()]) {
-        std::cout << "THIS IS CREATING OF ARRAY OF SIZE = " << size << "\n";
         for (int i = 0; i < size; ++i) {
             set(i, other.get(i));
         }
     }
 
     DynamicArray(const Sequence<T>& other): size(other.getLength()), array(new T[other.getLength()]) {
-        std::cout << "THIS IS CREATING OF ARRAY OF SIZE = " << size << "\n";
         for (int i = 0; i < size; ++i) {
             set(i, other.get(i));
         }
@@ -54,12 +47,12 @@ public:
     }
 
     T& operator[](int index) {
-        if (index >= size || index < 0) throw std::out_of_range("The entered index is out of range.\n");
+        if (index >= size || index < 0) throw std::out_of_range("The entered index is out of range : " + std::to_string(index) + "\n");
         return array[index];
     }
 
     const T& operator[](int index) const {
-        if (index >= size || index < 0) throw std::out_of_range("The entered index is out of range.\n");
+        if (index >= size || index < 0) throw std::out_of_range("The entered index is out of range" + std::to_string(index) + "\n");
         return const_cast<T&>(array[index]);
     }
 
@@ -71,7 +64,6 @@ public:
             array[i] = other.get(i);
         }
         size = other.size;
-        std::cout << "THIS IS CREATING OF ARRAY OF SIZE = " << size << "\n";
         return *this; // возвращаем обновленный *this как rvalue;
     }
 
@@ -94,12 +86,7 @@ public:
         T* helpArray = new T[newSize];
         int minSize = newSize < size ? newSize : size;
         for (int i = 0; i < minSize; ++i) {
-            // TEST 13
-            std::cout << "minSize = " << minSize << "\n";
             helpArray[i] = array[i];
-        }
-        if (size != 0) {
-            delete[] array;
         }
         array = helpArray;
         size = newSize;
@@ -110,8 +97,6 @@ public:
     }
 
     void append(const T& item) {
-        // TEST 14
-        std::cout << "test 14 " << size << '\n';
         resize(size + 1);
         array[size - 1] = item;
     }

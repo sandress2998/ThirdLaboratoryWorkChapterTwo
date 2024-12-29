@@ -11,13 +11,18 @@ private:
 
 public:
     ~Line() {
-        delete page;
+        //delete page;
     }
+
+/* не работает
+    void deletePage() {
+        delete page;
+        page = nullptr;
+    }
+*/
 
     // используем такой конструктор только для самого первого слова в тексте
     Line() {
-        std::cout << "In default constructor\n";
-        std::cout << capacity << " " << size << "\n";
         page = new Page(0);
     }
 
@@ -43,19 +48,9 @@ public:
             newLine->addWord(str);
             return newLine;
         } else {
-            std::cout << "str.size = " << str.size() << '\n';
             size += str.size();
             ++size;
             return this;
         }
-    }
-
-    // TEST
-    int getCapacity() const {
-        return capacity;
-    }
-
-    int getSize() const {
-        return size;
     }
 };

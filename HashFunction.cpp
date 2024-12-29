@@ -5,5 +5,5 @@ int djb2_hash(const std::string& str, int hashTableLength) {
     for (char c : str) {
         hash = ((hash << 5) + hash) + static_cast<unsigned char>(c);
     }
-    return hash % hashTableLength;
+    return std::abs(hash) % hashTableLength;
 }

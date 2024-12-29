@@ -4,43 +4,44 @@
 #include "Line.h"
 #include "MutableSegmentedDeque.h"
 
-// TEST
-#include <iostream>
 
 class Word {
-friend void parse(std::string str, HashTable<Word>& wordsHashTable, MutableSegmentedDeque<Word*>& wordsDeque);
+friend void analyzeWord(std::string phrase, HashTable<Word>& wordsHashTable, MutableSegmentedDeque<Word*>& wordsDeque);
 private:
     std::string value;
-    DynamicArray<Line*>* lineArray = nullptr;
+    DynamicArray<Line*>* lineArray = new DynamicArray<Line*>();
 
     // функция добавления добавления новой линии для слова (получается, что слово где-то в этой линии встречается)
     void setLine(Line* line) {
-        // TEST 8
-        std::cout << "test 8\n";
-        std::cout << "lineArray size after test 8: " << lineArray->getSize() << "\n";
         lineArray->append(line);
-        // TEST 9
-        std::cout << "test 9\n";
     }
 public:
-    Word(const std::string& str): value(str), lineArray(new DynamicArray<Line*>()) {
-        std::cout << "lineArray initial size = " << lineArray->getSize() << "\n";
-    }
+    Word(const std::string& str): value(str) {}
 
     Word(const Word& another): value(another.value), lineArray(another.lineArray) { } 
 
-    Word(): lineArray(new DynamicArray<Line*>()) {
-        // TEST
-        std::cout << "default constructor in Word\n";
-        std::cout << "lineArray initial size = " << lineArray->getSize() << "\n";
-    }
+    Word() {}
 
+// ЛУЧШЕ СДЕЛАТЬ ОТДЕЛЬНУЮ ФУНКЦИЮ deleteLinesAndPages, которая будет вызываться сознательно, а не когда как
     ~Word() {
         for (int i = 0; i < lineArray->getSize(); ++i) {
-            delete lineArray->get(i);
+            //delete lineArray->get(i);
         }
-        delete lineArray;
+        // Хотя стойте... может быть здесь ошибка? Да, наверняка здесь
+        //delete lineArray;
     }
+
+/* не работает
+    void deleteLinesAndPages() {
+        for (int i = 0; i < lineArray->getSize(); ++i) {
+            if (lineArray->get(i) != nullptr) {
+                lineArray->get(i)->deletePage();
+                delete lineArray->get(i);
+                (*lineArray)[i] = nullptr;
+            }
+        }
+    }
+*/
 
     const std::string& getValue() const {
         return value;
@@ -54,7 +55,6 @@ public:
     }
 
     Word& operator=(const Word& another) {
-        std::cout << "Мб здесь ошибка?\n";
         value = another.value;
         lineArray = another.lineArray;
         return *this;
