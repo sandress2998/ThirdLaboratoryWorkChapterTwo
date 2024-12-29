@@ -6,7 +6,7 @@
 
 bool checkSymbolValid(char symbol);
 
-void parse(std::string str, HashTable<Word>& wordsHashTable, MutableSegmentedDeque<Word*>& wordsDeque) {
+void parse(std::string str, HashTable<Word>& wordsHashTable, MutableSegmentedDeque<SharedPtr<Word>>& wordsDeque) {
     std::string phrase = "";
     int length = str.size();
     for (int i = 0; i < length; ++i) {
@@ -33,13 +33,13 @@ bool checkSymbolValid(char symbol) {
     return false;
 }
 
-void analyzeWord(std::string phrase, HashTable<Word>& wordsHashTable, MutableSegmentedDeque<Word*>& wordsDeque) {
-    Word* word;
+void analyzeWord(std::string phrase, HashTable<Word>& wordsHashTable, MutableSegmentedDeque<SharedPtr<Word>>& wordsDeque) {
+    SharedPtr<Word> word;
     try {
-        word = &(wordsHashTable.find(phrase)); // пытаемся найти уже существующее слово
+        word = wordsHashTable.find(phrase); // пытаемся найти уже существующее слово
     } catch (const std::invalid_argument&) { // ловим исключение, если не нашли слово
         wordsHashTable.append(phrase); // создаем новое слово
-        word = &(wordsHashTable.find(phrase));
+        word = wordsHashTable.find(phrase);
     }  
 
     if (wordsDeque.getLength() != 0) { // проверка на первое слово в тексте
@@ -47,10 +47,12 @@ void analyzeWord(std::string phrase, HashTable<Word>& wordsHashTable, MutableSeg
         // оно будет (или не будет) помещено. В параметры передаем указатель на строку у последнего уже 
         // рассмотренного слова.
     } else {
-        word->setLine((new Line())->addWord(phrase)); 
+        word->setLine(Line::createFirstLine()->addWord(phrase)); 
     }
     wordsDeque.append(word);
 }
+
+
 /*
 void parse(std::string str, HashTable<Word>& wordsHashTable, MutableSegmentedDeque<Word*>& wordsDeque) {
     std::string phrase = "";

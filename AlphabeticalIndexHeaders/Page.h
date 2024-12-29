@@ -1,8 +1,10 @@
 #pragma once
+#include "WeakPtr.h"
 
 class Page {
 private:
     static const int standartCapacity = 50;
+    WeakPtr<Page> currentPage;
     int index;
     int capacity;
     int size = 0;
@@ -16,16 +18,28 @@ public:
             capacity = standartCapacity;
         }
     }
+    
+    // Плохо, знаю, но по-другому никак
+    static SharedPtr<Page> createFirstPage() {
+        SharedPtr<Page> page = makeShared<Page>(0);
+        page->currentPage = page;
+        return page;
+    }
 
     int getIndex() const {
         return index;
     }
 
-    Page* addLine() {
+    SharedPtr<Page> addLine() {
         if (capacity - size > 0) {
             ++size;
-            return this;
+            return currentPage.lock();
         }
-        return new Page(++index);
+        // если нужно создать новую страницу...
+        SharedPtr<Page> newPage = makeShared<Page>(++index);
+        newPage->currentPage = newPage;
+        return newPage;
     }
+    
+    ~Page() {}
 };
