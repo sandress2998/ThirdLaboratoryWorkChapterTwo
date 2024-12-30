@@ -37,19 +37,30 @@ void analyzeWord(std::string phrase, HashTable<Word>& wordsHashTable, MutableSeg
     SharedPtr<Word> word;
     try {
         word = wordsHashTable.find(phrase); // пытаемся найти уже существующее слово
+        std::cout << "The word founded...\n";
     } catch (const std::invalid_argument&) { // ловим исключение, если не нашли слово
         wordsHashTable.append(phrase); // создаем новое слово
         word = wordsHashTable.find(phrase);
     }  
-
+    std::cout << "After try-catch...\n";
     if (wordsDeque.getLength() != 0) { // проверка на первое слово в тексте
+        std::cout << "Before setLine...\n";
         word->setLine(wordsDeque.getLast()->getLastLine()->addWord(phrase)); // мы устанавливаем для слова строку, на которой 
         // оно будет (или не будет) помещено. В параметры передаем указатель на строку у последнего уже 
         // рассмотренного слова.
+        std::cout << "After setLine...\n";
     } else {
-        word->setLine(Line::createFirstLine()->addWord(phrase)); 
+        word->setLine(Line::createFirstLine()->addWord(phrase));
     }
+    /*
+    SharedPtr<DynamicArray<SharedPtr<Line>>> lineArray = word->getLineArray();
+    for (int i = 0; i < lineArray->getSize(); ++i) {
+        std::cout << word->getValue() << ": " << lineArray->get(i)->getPageAddress() << " with index " << lineArray->get(i)->getIndex() << "\n";
+    }
+    */
     wordsDeque.append(word);
+    // выходит, проблема в том, что мое слово просто не анализируется... А почему так происходит?
+    std::cout << wordsDeque.getLength() << "\n";
 }
 
 
