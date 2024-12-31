@@ -2,11 +2,19 @@
 #include "DynamicArray.h"
 #include "MutableSegmentedDeque.h"
 #include "HashTable.h"
+#include "SharedPtr.h"
+#include "D:\VSCodeProjects\ThirdLaboratoryWorkChapterTwo\HashFunction.h"
+#include "Book.h"
 #include "D:\VSCodeProjects\ThirdLaboratoryWorkChapterTwo\AlphabeticalIndexHeaders\Word.h"
 
 bool checkSymbolValid(char symbol);
+void analyzeWord(std::string phrase, HashTable<Word>& wordsHashTable, MutableSegmentedDeque<SharedPtr<Word>>& wordsDeque);
 
-void parse(std::string str, HashTable<Word>& wordsHashTable, MutableSegmentedDeque<SharedPtr<Word>>& wordsDeque) {
+//void parse(std::string str, HashTable<Word>& wordsHashTable, MutableSegmentedDeque<SharedPtr<Word>>& wordsDeque) {
+Book parse(const std::string& str, int hashTableLength) {
+    SharedPtr<MutableSegmentedDeque<SharedPtr<Word>>> wordsDeque = makeShared<MutableSegmentedDeque<SharedPtr<Word>>>(); 
+    SharedPtr<HashTable<Word>> wordsHashTable = makeShared<HashTable<Word>>(hashTableLength, &djb2_hash);
+
     std::string phrase = "";
     int length = str.size();
     for (int i = 0; i < length; ++i) {
@@ -14,16 +22,18 @@ void parse(std::string str, HashTable<Word>& wordsHashTable, MutableSegmentedDeq
             phrase += str[i];
             
             if (i == length - 1) {
-                analyzeWord(phrase, wordsHashTable, wordsDeque);
+                analyzeWord(phrase, *wordsHashTable, *wordsDeque);
             }
             
         } else if (phrase == "") {
             continue;
         } else {
-            analyzeWord(phrase, wordsHashTable, wordsDeque);
+            analyzeWord(phrase, *wordsHashTable, *wordsDeque);
             phrase = "";
         }
     }
+
+    return Book(wordsHashTable, wordsDeque);
 }
 
 bool checkSymbolValid(char symbol) {
@@ -37,18 +47,18 @@ void analyzeWord(std::string phrase, HashTable<Word>& wordsHashTable, MutableSeg
     SharedPtr<Word> word;
     try {
         word = wordsHashTable.find(phrase); // пытаемся найти уже существующее слово
-        std::cout << "The word founded...\n";
+        //std::cout << "The word founded...\n";
     } catch (const std::invalid_argument&) { // ловим исключение, если не нашли слово
         wordsHashTable.append(phrase); // создаем новое слово
         word = wordsHashTable.find(phrase);
     }  
-    std::cout << "After try-catch...\n";
+    //std::cout << "After try-catch...\n";
     if (wordsDeque.getLength() != 0) { // проверка на первое слово в тексте
-        std::cout << "Before setLine...\n";
+        //std::cout << "Before setLine...\n";
         word->setLine(wordsDeque.getLast()->getLastLine()->addWord(phrase)); // мы устанавливаем для слова строку, на которой 
         // оно будет (или не будет) помещено. В параметры передаем указатель на строку у последнего уже 
         // рассмотренного слова.
-        std::cout << "After setLine...\n";
+        //std::cout << "After setLine...\n";
     } else {
         word->setLine(Line::createFirstLine()->addWord(phrase));
     }
@@ -60,7 +70,7 @@ void analyzeWord(std::string phrase, HashTable<Word>& wordsHashTable, MutableSeg
     */
     wordsDeque.append(word);
     // выходит, проблема в том, что мое слово просто не анализируется... А почему так происходит?
-    std::cout << wordsDeque.getLength() << "\n";
+    //std::cout << wordsDeque.getLength() << "\n";
 }
 
 

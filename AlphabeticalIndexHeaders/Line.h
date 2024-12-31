@@ -17,7 +17,7 @@ private:
 
     // Наверное, ошибка здесь!!!
     SharedPtr<Line> defineNextLine() {
-        std::cout << "Defining a new line... " << "\n";
+        //std::cout << "Defining a new line... " << "\n";
         SharedPtr<Page> nextPage = page->addLine();
         SharedPtr<Line> nextLine = makeShared<Line>(nextPage); // создаем новую строку через умный указатель
         nextLine->currentLine = nextLine; // в новую строку в поле line записываем умный указатель на новую строку
@@ -59,10 +59,10 @@ public:
 
     // добавляем новое слово в строку и возвращаем указатель на строку, в которой мы прибавили это слово
     SharedPtr<Line> addWord(const std::string& str) {
-        std::cout << "In addWord(...) before if-else... " << "word = " << str << "\n";
-        std::cout << "capacity = " << capacity << "; size = " << size << "; str.size = " << str.size() << "\n";
+        //std::cout << "In addWord(...) before if-else... " << "word = " << str << "\n";
+        //std::cout << "capacity = " << capacity << "; size = " << size << "; str.size = " << str.size() << "\n";
         if (capacity - size < str.size()) {
-            std::cout << "In addWord(...)...\n";
+            //std::cout << "In addWord(...)...\n";
             SharedPtr<Line> newLine = defineNextLine(); // создаем новую строку, учитывая заполненность текущей страницы
             newLine->addWord(str);
             return newLine;
@@ -71,8 +71,8 @@ public:
             if (size + 1 <= capacity) {
                 ++size;
             }
-            std::cout << "In addWord(...) in else block..." << " size = " << size << "\n";
-            std::cout << currentLine.lock()->size << "\n";
+            //std::cout << "In addWord(...) in else block..." << " size = " << size << "\n";
+            //std::cout << currentLine.lock()->size << "\n";
             return currentLine.lock(); // просто копируем наш умный указатель на текущую строку
         }
     }

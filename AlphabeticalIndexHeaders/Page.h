@@ -38,13 +38,13 @@ public:
     SharedPtr<Page> addLine() {
         if (capacity - size > 0) {
             ++size;
-            std::cout << "capacity = " << capacity << " size = " << size << "\n";
+            //std::cout << "capacity = " << capacity << " size = " << size << "\n";
             return currentPage.lock();
         }
         // если нужно создать новую страницу...
         SharedPtr<Page> newPage = makeShared<Page>(index + 1);
         newPage->currentPage = newPage;
-        std::cout << "creating a new page... index = " << index + 1 << "\n";
+        //std::cout << "creating a new page... index = " << index + 1 << "\n";
         return newPage;
     }
     

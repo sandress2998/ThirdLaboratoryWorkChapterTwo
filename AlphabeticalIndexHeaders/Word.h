@@ -49,11 +49,11 @@ public:
     }
 
     SharedPtr<Line> getLastLine() const {
-        std::cout << "In getLastLine()... size = " << lineArray->getSize() << "\n";
+        //std::cout << "In getLastLine()... size = " << lineArray->getSize() << "\n";
         return (*lineArray)[lineArray->getSize() - 1];
     }
 
-    SharedPtr<DynamicArray<int>> getPagesNumber() const {
+    SharedPtr<DynamicArray<int>> getPageNumbers() const {
         SharedPtr<DynamicArray<int>> numbers = makeShared<DynamicArray<int>>();
         for (int i = 0; i < lineArray->getSize(); ++i) {
             numbers->append(lineArray->get(i)->getPage()->getIndex());
@@ -61,7 +61,7 @@ public:
         return numbers;
     }
 
-    SharedPtr<DynamicArray<int>> getLinesNumber() const {
+    SharedPtr<DynamicArray<int>> getLineNumbers() const {
         SharedPtr<DynamicArray<int>> numbers = makeShared<DynamicArray<int>>();
         for (int i = 0; i < lineArray->getSize(); ++i) {
             numbers->append(lineArray->get(i)->getIndex());
